@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width"> <!-- , initial-scale=1.0 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter" rel="stylesheet">
+    <!-- Fuentes de Iconos Redes -->
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+    <title>El Encriptador</title>
+</head>
+<body>
+    <div class="container">
+
+        <div class="logo"> <!-- LOGO Y TÍTULO -->
+            <img class="logo-img" src="imagenes/Logo.png" alt="imagen del logo de Alura">
+            <h1 class="titulo">C A M A R E R O . . .   D E S E N C R Í P T E M E L O !!!</h1>
+        </div>
+
+        <div class="receptor">  <!-- ZONA PARA RECIBIR MENSAJES DEL USUSARIO -->
+            <textarea class="txt-receptor" id="txt-receptor" cols="30" rows="10" placeholder="Ingrese el texto aquí"></textarea>
+            
+                <div class="btn">   <!-- BOTONES -->
+                    <h5><i class="fa fa-exclamation-circle" aria-hidden="true"></i>  Sólo letras minúsculas y sin acentos</h5>
+                    <button type ="button" id="btn-encriptar" onclick = "encriptar()">Encriptar</button>
+                    <button type ="button" id="btn-desencriptar" onclick = "desencriptar()">Desencriptar</button>
+                </div>
+        </div>
+
+        <div class="exhibidor"> <!-- ZONA PARA MOSTRAR MENSAJES AL USUARIO -->
+            <img id="imagen-munieco" src="imagenes/Munieco.png" alt="imagen del muñeco">
+            <h1 id="texto-munieco">Ningún mensaje fue encontrado</h1>
+            <textarea id="textito-munieco" disabled="true" placeholder="Ingrese el texto que desee encriptar o desencriptar"></textarea>
+            <button type="button" id="btn-copiar" onclick="copiar()">Copiar</button>
+        </div>
+    </div>
+
+    <footer class="footer">  <!-- PIE DE PÁGINA -->
+        <div class="iconos-red-soc">
+            <a class="icono-red-soc"  target="_blank" href="https://www.linkedin.com/in/romina-d-romano/"><i class="fab fa-linkedin-in"></i></a>
+            <a class="icono-red-soc"  target="_blank" href="https://www.instagram.com/p/CcP6kNku3BV/?igshid=YmMyMTA2M2Y="><i class="fab fa-instagram"></i></a>
+            <a class="icono-red-soc"  target="_blank" href="https://github.com/RominaRomano"><i class="fab fa-github"></i></a>
+            <a class="icono-red-soc"  target="_blank" href="https://www.facebook.com/profile.php?id=100007328088684"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <p class="footer-text">© 2023 Copyright: Romina D. Romano</p>
+    </footer>
+</body>
+
+<!-- LOGICA PARA QUE FUNCIONE -->
+<script>
+    const matrizRemplazos = [ //MATRIZ QUE CONTIENE LA CONSIGNA DE ENCRIPTACIÓN
+    ['e', 'enter'],
+    ['i', 'imes'],
+    ['o', 'ober'],
+    ['a', 'ai'],
+    ['u', 'ufat'],
+    ];
+
+    function encriptar(){   // SE ACTIVA CON LA PULSACIÓN DEL BOTÓN
+        var texto = evaluar();  // EVALUA QUE NO HAYA MAYÚSCULAS Y/O ACENTOS Y EN TAL CASO AVISA DE LA RECONVERSIÓN DEL TEXTO
+        for (let i = 0; i < matrizRemplazos.length; i++) {  // POR CADA POSIBLE REMPLAZO
+            if (texto.includes(matrizRemplazos[i][0])) {    //  SI EL VALOR A ENCRIPTAR ESTÁ PRESENTE EN LA CADENA
+                texto = texto.replaceAll(matrizRemplazos[i][0], matrizRemplazos[i][1]); // SE SUSTITUYE POR EL VALOR ASOCIADO SEGÚN LA CONSIGNA
+            }
+        }
+        exhibir(texto); // MUESTRA EL TEXTO ENCRIPTADO EN LA ZONA DEL EXHIBIDOR
+    }
+  
+    function desencriptar(){  // SE ACTIVA CON LA PULSACIÓN DEL BOTÓN
+        var texto = evaluar();  // EVALUA QUE NO HAYA MAYÚSCULAS Y/O ACENTOS Y EN TAL CASO AVISA DE LA RECONVERSIÓN DEL TEXTO
+        for (let i = 0; i < matrizRemplazos.length; i++) {  // POR CADA POSIBLE REMPLAZO...
+            if (texto.includes(matrizRemplazos[i][1])) {    //  SI EL VALOR A ENCRIPTAR ESTÁ PRESENTE EN LA CADENA
+                texto = texto.replaceAll(matrizRemplazos[i][1], matrizRemplazos[i][0]); // SE SUSTITUYE POR EL VALOR ASOCIADO SEGÚN LA CONSIGNA
+            }
+        }
+        exhibir(texto); // MUESTRA EL TEXTO DESENCRIPTADO EN LA ZONA DEL EXHIBIDOR
+    } 
+
+    function copiar(){  // SE ACTIVA CON LA PULSACIÓN DEL BOTÓN
+        document.getElementById("textito-munieco").disabled = false;
+        var mensaje = document.querySelector("#textito-munieco");   // CAPTURA EL TEXTO
+        mensaje.select();   // LO SELECCIONA EN LA PANTALLA
+        document.execCommand("copy");   // Y LO PREPARA PARA SER COPIADO
+        document.getElementById("textito-munieco").disabled = true;
+    }
+
+    function evaluar(){
+        var textoOriginal = document.getElementById("txt-receptor").value;  //CAPTURA DEL VALOR DEL HTML
+        var texto = textoOriginal.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,"");    //CONVIERTE A MINUSCULAS Y ELIMINA ACENTOS
+        if (texto != textoOriginal){    // SI EL TEXTO ORIGINAL SUFRIÓ CAMBIOS...
+            alert ("Su texto se ha reconvertido a letras minúsculas y sin acentos");  // AVISA AL USUARIO SOBRE ESTA RECONVERSIÓN
+        }
+        return texto;   // DEVUELVE EL TEXTO OPTIMIZADO
+    }
+  
+    function exhibir(texto){    // RECIBE EL TEXTO A MOSTRAR EN ZONA EXHIBIDOR
+        document.getElementById("imagen-munieco").style.display = "none";   // DEJA DE MOSTRAR EL DIBUJO
+        document.getElementById("texto-munieco").style.display = "none";    // DEJA DE MOSTRAR EL TEXTO ASOCIADO AL DIBUJO
+        document.getElementById("textito-munieco").innerHTML = texto;   // CAMBIA EL CONTENIDO INICIAL POR EL TEXTO A EXHIBIR
+        document.getElementById("btn-copiar").style.display = "inherit";    // EL BOTÓN COPIAR SE HACE VISIBLE COMO SU CONTENEDOR, INICIALMENTE EN DISPLAY=NONE CSS
+    }
+</script>
+</html>
